@@ -35,6 +35,7 @@ initialize_simps_projections Subtype (val → coe)
 
 /-- A version of `x.property` or `x.2` where `p` is syntactically applied to the coercion of `x`
   instead of `x.1`. A similar result is `Subtype.mem` in `Mathlib/Data/Set/Basic.lean`. -/
+-- This is a leftover from Lean 3: it is identical to `Subtype.property`, and should be deprecated.
 theorem prop (x : Subtype p) : p x :=
   x.2
 
@@ -60,9 +61,11 @@ lemma heq_iff_coe_heq {α β : Sort _} {p : α → Prop} {q : β → Prop} {a : 
   subst h'
   rw [heq_iff_eq, heq_iff_eq, Subtype.ext_iff]
 
+@[deprecated Subtype.ext (since := "2025-09-10")]
 theorem ext_val {a1 a2 : { x // p x }} : a1.1 = a2.1 → a1 = a2 :=
   Subtype.ext
 
+@[deprecated Subtype.ext_iff (since := "2025-09-10")]
 theorem ext_iff_val {a1 a2 : { x // p x }} : a1 = a2 ↔ a1.1 = a2.1 :=
   Subtype.ext_iff
 
@@ -73,7 +76,7 @@ theorem coe_eta (a : { a // p a }) (h : p a) : mk (↑a) h = a :=
 theorem coe_mk (a h) : (@mk α p a h : α) = a :=
   rfl
 
-/-- Restatement of `subtype.mk.injEq` as an iff. -/
+/-- Restatement of `Subtype.mk.injEq` as an iff. -/
 theorem mk_eq_mk {a h a' h'} : @mk α p a h = @mk α p a' h' ↔ a = a' := by simp
 
 theorem coe_eq_of_eq_mk {a : { a // p a }} {b : α} (h : ↑a = b) : a = ⟨b, h ▸ a.2⟩ :=
@@ -110,7 +113,7 @@ theorem _root_.Function.extend_val_apply {p : β → Prop} {g : {x // p x} → �
   val_injective.extend_apply g j ⟨b, hb⟩
 
 theorem _root_.Function.extend_val_apply' {p : β → Prop} {g : {x // p x} → γ} {j : β → γ}
-    {b : β} (hb : ¬ p b) : val.extend g j b = j b := by
+    {b : β} (hb : ¬p b) : val.extend g j b = j b := by
   refine Function.extend_apply' g j b ?_
   rintro ⟨a, rfl⟩
   exact hb a.2
@@ -179,6 +182,18 @@ theorem map_involutive {p : α → Prop} {f : α → α} (h : ∀ a, p a → p (
     (hf : Involutive f) : Involutive (map f h) :=
   fun x ↦ Subtype.ext (hf x)
 
+theorem map_eq {p : α → Prop} {q : β → Prop} {f g : α → β}
+    (h₁ : ∀ a : α, p a → q (f a)) (h₂ : ∀ a : α, p a → q (g a))
+    {x y : Subtype p} :
+    map f h₁ x = map g h₂ y ↔ f x = g y :=
+  Subtype.ext_iff
+
+theorem map_ne {p : α → Prop} {q : β → Prop} {f g : α → β}
+    (h₁ : ∀ a : α, p a → q (f a)) (h₂ : ∀ a : α, p a → q (g a))
+    {x y : Subtype p} :
+    map f h₁ x ≠ map g h₂ y ↔ f x ≠ g y :=
+  map_eq h₁ h₂ |>.not
+
 instance [HasEquiv α] (p : α → Prop) : HasEquiv (Subtype p) :=
   ⟨fun s t ↦ (s : α) ≈ (t : α)⟩
 
@@ -214,6 +229,6 @@ theorem coe_prop {S : Set α} (a : { a // a ∈ S }) : ↑a ∈ S :=
   a.prop
 
 theorem val_prop {S : Set α} (a : { a // a ∈ S }) : a.val ∈ S :=
-  a.property
+  a.prop
 
 end Subtype
