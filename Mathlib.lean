@@ -1,7 +1,5 @@
 module
 
-public import Mathlib.MyTests.filter_upwards
--- And now the true ones
 public import Std
 public import Batteries
 public import Mathlib.Algebra.AddConstMap.Basic
