@@ -26,3 +26,10 @@ lemma irred_exposed_foo_def : irred_exposed_foo = 23 := by
 def semired_exposed_foo : ℕ := 23
 
 lemma semired_exposed_foo_def : semired_exposed_foo = 23 := rfl
+
+@[reducible]
+def red_nonexposed_foo : ℕ := 23
+
+lemma red_nonexposed_foo_def : red_nonexposed_foo = 23 :=
+  -- rfl
+  by rfl

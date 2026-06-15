@@ -20,4 +20,7 @@ lemma irred_nonexposed_bar' : irred_nonexposed_foo = 23 := by
 lemma irred_exposed_bar : irred_exposed_foo = 23 := by
   unfold irred_exposed_foo ; rfl
 
-lemma bar : semired_exposed_foo = 23 := rfl
+lemma semired_exposed_bar : semired_exposed_foo = 23 := rfl
+
+lemma red_nonexposed_bar : red_nonexposed_foo = 23 := by
+  unfold red_nonexposed_foo
